@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Machine</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        #display {
+            /* Set font-size to twice the original size */
+            font-size: 4rem;
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid #000;
+            min-height: 3rem;
+        }
+
+        .controls {
+            margin: 20px 0;
+        }
+
+        .controls > * {
+            margin: 0 10px;
+        }
+
+        #passage-input {
+            width: 80%;
+            margin: 20px 0;
+        }
+
+        /* Class to add a border-like shadow around each letter */
+        .bordered-text {
+            text-shadow: 
+                -1px -1px 0 #000,  
+                1px -1px 0 #000, 
+                -1px 1px 0 #000, 
+                1px 1px 0 #000;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Word Machine</h1>
+
+    <textarea id="passage-input" rows="5" placeholder="Enter your passage here..."></textarea>
+    <br>
+
+    <div class="controls">
+        <button onclick="start()">Start</button>
+        <button onclick="pause()">Pause</button>
+        <button onclick="resume()">Resume</button>
+        <button onclick="reset()">Reset</button>
+        <br><br>
+        <label for="wpm">Words Per Minute:</label>
+        <!-- Default words per minute changed from 200 to 120 -->
+        <input type="number" id="wpm" value="120" min="10" max="1000">
+        <label for="words-at-a-time">Words at a Time:</label>
+        <input type="number" id="words-at-a-time" value="1" min="1" max="10">
+    </div>
+
+    <div id="display"></div>
+
+    <script>
+        let words = [];
+        let currentIndex = 0;
+        let intervalId;
+        let isPaused = false;
+        const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+
+        function start() {
+            const passage = document.getElementById('passage-input').value.trim();
+            if (passage === "") return alert("Please enter a passage.");
+
+            words = passage.split(/\s+/); // Split by whitespace
+            currentIndex = 0;
+            isPaused = false;
+            showWords();
+        }
+
+        function pause() {
+            clearInterval(intervalId);
+            isPaused = true;
+        }
+
+        function resume() {
+            if (isPaused) showWords();
+        }
+
+        function reset() {
+            clearInterval(intervalId);
+            currentIndex = 0;
+            isPaused = false;
+            document.getElementById('display').innerText = "";
+        }
+
+        function showWords() {
+            const wpm = parseInt(document.getElementById('wpm').value);
+            const wordsAtATime = parseInt(document.getElementById('words-at-a-time').value);
+
+            // Adjust interval considering words at a time
+            const interval = (60000 / wpm) * wordsAtATime;
+
+            clearInterval(intervalId);
+
+            intervalId = setInterval(() => {
+                if (currentIndex >= words.length) {
+                    clearInterval(intervalId);
+                    return;
+                }
+
+                let wordDisplay = "";
+                for (let i = 0; i < wordsAtATime; i++) {
+                    if (currentIndex + i >= words.length) break; // Avoid overflow
+
+                    // Get the color based on the current word index cycling through the colors array
+                    const color = colors[(currentIndex + i) % colors.length];
+
+                    // Append the word wrapped in a span with color and shadow effect
+                    wordDisplay += `<span class="bordered-text" style="color:${color}">${words[currentIndex + i]}</span> `;
+                }
+
+                document.getElementById('display').innerHTML = wordDisplay.trim();
+                currentIndex += wordsAtATime;
+            }, interval);
+        }
+    </script>
+
+</body>
+</html>
