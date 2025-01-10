@@ -47,6 +47,10 @@
             cursor: pointer;
         }
 
+        .highlighted-word {
+            background-color: yellow;
+        }
+
         #clickable-text {
             margin: 20px 0;
             padding: 10px;
@@ -102,10 +106,14 @@
         function pause() {
             clearInterval(intervalId);
             isPaused = true;
+            highlightCurrentWord();
         }
 
         function resume() {
-            if (isPaused) showWords();
+            if (isPaused) {
+                removeHighlight();
+                showWords();
+            }
         }
 
         function reset() {
@@ -157,6 +165,29 @@
                 };
                 clickableTextDiv.appendChild(span);
             });
+        }
+
+        function highlightCurrentWord() {
+            const clickableTextDiv = document.getElementById('clickable-text');
+            const spans = clickableTextDiv.getElementsByTagName('span');
+
+            for (let i = 0; i < spans.length; i++) {
+                spans[i].classList.remove('highlighted-word');
+            }
+
+            if (currentIndex < spans.length) {
+                spans[currentIndex].classList.add('highlighted-word');
+                spans[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function removeHighlight() {
+            const clickableTextDiv = document.getElementById('clickable-text');
+            const spans = clickableTextDiv.getElementsByTagName('span');
+
+            for (let i = 0; i < spans.length; i++) {
+                spans[i].classList.remove('highlighted-word');
+            }
         }
     </script>
 
