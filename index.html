@@ -133,7 +133,9 @@
             currentIndex = 0;
             isPaused = false;
             document.getElementById('display').innerText = "";
+            removeHighlight();
             showWords();
+            document.getElementById('pause-resume').innerText = "Pause";
         }
 
         function reset() {
