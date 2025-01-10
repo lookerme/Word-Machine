@@ -91,6 +91,7 @@
         let intervalId;
         let isPaused = false;
         const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+        const darkColors = ["red", "blue", "indigo", "violet", "green"];
 
         function start() {
             const passage = document.getElementById('passage-input').value.trim();
@@ -173,11 +174,18 @@
 
             for (let i = 0; i < spans.length; i++) {
                 spans[i].classList.remove('highlighted-word');
+                spans[i].style.backgroundColor = "";
+                spans[i].style.color = "";
+                spans[i].style.textShadow = "";
             }
 
-            if (currentIndex < spans.length) {
-                spans[currentIndex].classList.add('highlighted-word');
-                spans[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (currentIndex - 1 < spans.length && currentIndex - 1 >= 0) {
+                const color = colors[(currentIndex - 1) % colors.length];
+                spans[currentIndex - 1].style.backgroundColor = color;
+                spans[currentIndex - 1].style.color = darkColors.includes(color) ? "white" : "black";
+                spans[currentIndex - 1].style.textShadow = darkColors.includes(color) ? 
+                    "-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000" : "";
+                spans[currentIndex - 1].scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         }
 
@@ -187,6 +195,9 @@
 
             for (let i = 0; i < spans.length; i++) {
                 spans[i].classList.remove('highlighted-word');
+                spans[i].style.backgroundColor = "";
+                spans[i].style.color = "";
+                spans[i].style.textShadow = "";
             }
         }
     </script>
