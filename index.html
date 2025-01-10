@@ -73,8 +73,8 @@
 
     <div class="controls">
         <button onclick="start()">Start</button>
-        <button onclick="pause()">Pause</button>
-        <button onclick="resume()">Resume</button>
+        <button id="pause-resume" onclick="togglePauseResume()">Pause</button>
+        <button onclick="restart()">Restart</button>
         <button onclick="reset()">Reset</button>
         <br><br>
         <label for="wpm">Words Per Minute:</label>
@@ -104,17 +104,36 @@
             showWords();
         }
 
+        function togglePauseResume() {
+            if (isPaused) {
+                resume();
+            } else {
+                pause();
+            }
+        }
+
         function pause() {
             clearInterval(intervalId);
             isPaused = true;
+            document.getElementById('pause-resume').innerText = "Resume";
             highlightCurrentWord();
         }
 
         function resume() {
             if (isPaused) {
+                isPaused = false;
                 removeHighlight();
                 showWords();
+                document.getElementById('pause-resume').innerText = "Pause";
             }
+        }
+
+        function restart() {
+            clearInterval(intervalId);
+            currentIndex = 0;
+            isPaused = false;
+            document.getElementById('display').innerText = "";
+            showWords();
         }
 
         function reset() {
@@ -124,6 +143,7 @@
             document.getElementById('display').innerText = "";
             document.getElementById('clickable-text').innerHTML = "";
             document.getElementById('passage-input').value = "";
+            document.getElementById('pause-resume').innerText = "Pause";
         }
 
         function showWords() {
