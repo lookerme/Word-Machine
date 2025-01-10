@@ -184,7 +184,10 @@
                 span.classList.add('clickable-word');
                 span.onclick = () => {
                     currentIndex = index;
+                    removeHighlight();
+                    isPaused = false;
                     showWords();
+                    document.getElementById('pause-resume').innerText = "Pause";
                 };
                 clickableTextDiv.appendChild(span);
             });
